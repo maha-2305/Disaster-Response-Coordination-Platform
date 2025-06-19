@@ -2,7 +2,7 @@
 
 This is a backend application built with Node.js and Express to coordinate disaster response operations using geospatial queries, Google Gemini, and Supabase.
 
-**# 🚀 Features**
+## 🚀 Features
 - ✅ Create, update, delete disaster records
 - 📍 Extract locations from descriptions using Gemini API and geocode them using Google Maps
 - 📡 Real-time WebSocket updates for disasters, social media alerts, and resources
@@ -23,6 +23,14 @@ This is a backend application built with Node.js and Express to coordinate disas
    ```bash
    git clone <your-repo-url>
    cd disaster-response-platform
-Install dependencies:
+   
+2. Install dependencies:
+   npm install
+
+3. Create a .env file based on .env.example and fill in your credentials
+
+5. Start the server:
+   npm start
+
 
 
