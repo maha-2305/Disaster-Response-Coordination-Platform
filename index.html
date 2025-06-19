@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Disaster Response Platform</title>
+</head>
+<body>
+  <h1> Disaster Response Dashboard</h1>
+
+  <!-- Section: Create Disaster -->
+  <h2> Create New Disaster</h2>
+  <form id="disasterForm">
+    <input type="text" placeholder="Title" name="title" required><br><br>
+    <input type="text" placeholder="Location Name" name="location_name" required><br><br>
+    <textarea placeholder="Description" name="description" required></textarea><br><br>
+    <input type="text" placeholder="Tags (comma separated)" name="tags" required><br><br>
+    <input type="text" placeholder="Owner ID" name="owner_id" value="netrunnerX" required><br><br>
+    <button type="submit">Create Disaster</button>
+  </form>
+
+  <hr>
+
+  <!-- Section: List Disasters -->
+  <h2>📄 Disasters List</h2>
+  <button onclick="fetchDisasters()">Load Disasters</button>
+  <ul id="disasterList"></ul>
+
+  <hr>
+
+  <!-- Section: Geocode Location -->
+  <h2>Geocode Location from Description</h2>
+  <form id="geocodeForm">
+    <textarea placeholder="Enter disaster description..." name="description" required></textarea><br><br>
+    <button type="submit">Extract Location</button>
+  </form>
+  <p id="geocodeResult"></p>
+
+  <hr>
+
+  <!-- Section: Image Verification -->
+  <h2>Verify Disaster Image</h2>
+  <form id="imageForm">
+    <input type="text" placeholder="Image URL" name="image_url" required><br><br>
+    <input type="text" placeholder="Disaster ID" name="disaster_id" required><br><br>
+    <button type="submit">Verify Image</button>
+  </form>
+  <p id="imageResult"></p>
+
+  <script>
+    const apiBase = "http://localhost:3000"; // Change this if deployed
+
+    // Disaster Form Submission
+    document.getElementById("disasterForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = {
+        title: formData.get("title"),
+        location_name: formData.get("location_name"),
+        description: formData.get("description"),
+        tags: formData.get("tags").split(",").map(t => t.trim()),
+        owner_id: formData.get("owner_id")
+      };
+
+      const res = await fetch(`${apiBase}/disasters`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const json = await res.json();
+      alert("Disaster created: " + json.title);
+      e.target.reset();
+    });
+
+    // Load Disasters
+    async function fetchDisasters() {
+      const res = await fetch(`${apiBase}/disasters`);
+      const disasters = await res.json();
+      const list = document.getElementById("disasterList");
+      list.innerHTML = "";
+      disasters.forEach(d => {
+        const li = document.createElement("li");
+        li.textContent = `${d.title} - ${d.location_name}`;
+        list.appendChild(li);
+      });
+    }
+
+    // Geocode Form
+    document.getElementById("geocodeForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const description = e.target.description.value;
+
+      const res = await fetch(`${apiBase}/geocode`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ description })
+      });
+
+      const json = await res.json();
+      document.getElementById("geocodeResult").innerText = `Location: ${json.location_name}, Lat: ${json.lat}, Lng: ${json.lng}`;
+    });
+
+    // Image Verification Form
+    document.getElementById("imageForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const image_url = formData.get("image_url");
+      const disaster_id = formData.get("disaster_id");
+
+      const res = await fetch(`${apiBase}/disasters/${disaster_id}/verify-image`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image_url })
+      });
+
+      const json = await res.json();
+      document.getElementById("imageResult").innerText = `Gemini Response: ${json.verification}`;
+    });
+  </script>
+</body>
+</html>
