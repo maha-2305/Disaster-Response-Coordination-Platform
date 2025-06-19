@@ -31,7 +31,7 @@ This is a backend application built with Node.js and Express to coordinate disas
 3. Create a .env file based on .env.example and fill in your credentials
 
 5. Start the server:
-   ```bash
+ ```bash
    npm start
 
 
