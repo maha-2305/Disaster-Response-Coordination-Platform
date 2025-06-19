@@ -24,14 +24,14 @@ This is a backend application built with Node.js and Express to coordinate disas
    git clone <your-repo-url>
    cd disaster-response-platform
    
-2. Install dependencies:
- ```bash
+3. Install dependencies:
+    ```bash
    npm install
 
 3. Create a .env file based on .env.example and fill in your credentials
 
-5. Start the server:
- ```bash
+4. Start the server:
+   ```bash
    npm start
 
 
